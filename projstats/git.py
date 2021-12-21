@@ -13,16 +13,17 @@ def _exec_git(cmd, cwd=None):
     return None
 
 
-def get_commit_years(path):
+def get_commits_by_year(path):
     pattern = re.compile("^(\d\d\d\d)-\d\d-\d\d\s.*$")
-    years = set()
+    commits_by_year = {}
     for line in _exec_git(["git", "log", "--pretty=format:%ai"], cwd=path):
         if not line:
             break
         result = pattern.match(line)
         if result:
-            years.add(int(result.group(1)))
-    return sorted(years)
+            year = int(result.group(1))
+            commits_by_year[year] = commits_by_year.get(year, 0) + 1
+    return commits_by_year
 
 
 def calc_stats(path, year):

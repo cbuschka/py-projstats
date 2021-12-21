@@ -26,11 +26,12 @@ class Tool(object):
     def _collect_stats(self):
         for project in self.projects:
             path = project.path
-            years = git.get_commit_years(path)
-            for year in years:
+            commits_by_year = git.get_commits_by_year(path)
+            for year in commits_by_year.keys():
                 log.info("Collecting stats for {} from {}".format(year, path))
                 added, removed = git.calc_stats(path, year)
-                project.record(year, added, removed)
+                project.record(year, added, removed, commits_by_year[year])
+
 
     def _print_stats(self):
         for project in self.projects:
