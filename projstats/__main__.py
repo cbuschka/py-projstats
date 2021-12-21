@@ -1,5 +1,8 @@
 from projstats.tool import Tool
 import sys
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 if __name__ == '__main__':
   tool = Tool()

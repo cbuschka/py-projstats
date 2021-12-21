@@ -1,8 +1,11 @@
 import sys
+import logging
 
 from projstats import git
 from projstats.model import Project
 import os
+
+log = logging.getLogger(__name__)
 
 
 class Tool(object):
@@ -23,12 +26,15 @@ class Tool(object):
   def _collect_stats(self):
     for project in self.projects:
       path = project.path
-      added, removed = git.calc_stats(path)
-      project.record(added, removed)
+      years = git.get_commit_years(path)
+      for year in years:
+        log.info("Collecting stats for {} from {}".format(year, path))
+        added, removed = git.calc_stats(path, year)
+        project.record(year, added, removed)
 
   def _print_stats(self):
     for project in self.projects:
-      print("{}: +{} -{}".format(project.name, project.added, project.removed))
+      print("{}: {}".format(project.name, project.stats_by_year))
 
   def print_usage(self):
     print("projstats { project1 | project2 | ... }")
